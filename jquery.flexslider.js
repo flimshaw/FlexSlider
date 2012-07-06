@@ -323,29 +323,53 @@
           dx,
           startT,
           scrolling = false;
+		
+		
               
         el.addEventListener('touchstart', onTouchStart, false);
         function onTouchStart(e) {
-          if (slider.animating) {
-            e.preventDefault();
-          } else if (e.touches.length === 1) {
-            slider.pause();
-            // CAROUSEL: 
-            cwidth = (vertical) ? slider.h : slider. w;
-            startT = Number(new Date());
-            // CAROUSEL:
-            offset = (carousel && reverse && slider.animatingTo === slider.last) ? 0 :
-                     (carousel && reverse) ? slider.limit - (((slider.itemW + vars.itemMargin) * slider.move) * slider.animatingTo) :
-                     (carousel && slider.currentSlide === slider.last) ? slider.limit :
-                     (carousel) ? ((slider.itemW + vars.itemMargin) * slider.move) * slider.currentSlide : 
-                     (reverse) ? (slider.last - slider.currentSlide + slider.cloneOffset) * cwidth : (slider.currentSlide + slider.cloneOffset) * cwidth;
-            startX = (vertical) ? e.touches[0].pageY : e.touches[0].pageX;
-            startY = (vertical) ? e.touches[0].pageX : e.touches[0].pageY;
+			// if the target of the touch event is inside THIS slider, then attach these events, otherwise, go about your business
 
-            el.addEventListener('touchmove', onTouchMove, false);
-            el.addEventListener('touchend', onTouchEnd, false);
-          }
-        }
+			function checkParent(target) {
+				var checker = false;
+
+				$(el, slider.containerSelector)
+					.find('> .flex-viewport > .subSlides')
+					.children()
+					.each(function() {
+						if($(this)[0] == $(target)[0] || $(target).parent().is($(this))) {
+							checker = true;
+						} else {
+							console.log($(this));
+						}
+					});
+					return checker;
+			}
+
+		  if(checkParent(e.target)) {
+			  console.log(true);
+			  if (slider.animating) {
+	            e.preventDefault();
+	          } else if (e.touches.length === 1) {
+	            slider.pause();
+	            // CAROUSEL: 
+	            cwidth = (vertical) ? slider.h : slider. w;
+	            startT = Number(new Date());
+	            // CAROUSEL:
+	            offset = (carousel && reverse && slider.animatingTo === slider.last) ? 0 :
+	                     (carousel && reverse) ? slider.limit - (((slider.itemW + vars.itemMargin) * slider.move) * slider.animatingTo) :
+	                     (carousel && slider.currentSlide === slider.last) ? slider.limit :
+	                     (carousel) ? ((slider.itemW + vars.itemMargin) * slider.move) * slider.currentSlide : 
+	                     (reverse) ? (slider.last - slider.currentSlide + slider.cloneOffset) * cwidth : (slider.currentSlide + slider.cloneOffset) * cwidth;
+	            startX = (vertical) ? e.touches[0].pageY : e.touches[0].pageX;
+	            startY = (vertical) ? e.touches[0].pageX : e.touches[0].pageY;
+
+	            el.addEventListener('touchmove', onTouchMove, false);
+	            el.addEventListener('touchend', onTouchEnd, false);
+	          }
+	        }
+		}
+
 
         function onTouchMove(e) {
           dx = (vertical) ? startX - e.touches[0].pageY : startX - e.touches[0].pageX;
