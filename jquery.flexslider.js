@@ -333,14 +333,15 @@
 			function checkParent(target) {
 				var checker = false;
 
-				$(el, slider.containerSelector)
-					.find('> .flex-viewport > .subSlides')
+				//console.log(slider.container);
+
+				slider.container
 					.children()
 					.each(function() {
 						if($(this)[0] == $(target)[0] || $(target).parent().is($(this))) {
 							checker = true;
 						} else {
-							console.log($(this));
+							//console.log($(this));
 						}
 					});
 					return checker;
